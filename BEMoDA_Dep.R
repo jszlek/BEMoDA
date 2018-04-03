@@ -1,6 +1,6 @@
-# BEMoDA v1.0 - Bioequivalence Model Dependent-Independent Approach script for in-vitro dissolution profile comparison
+# BEMoDA v1.0 - BiowaivEr aid for Model Dependent-Independent Approach script for in-vitro dissolution profile comparison
 # 
-# Bioequivalence Model Dependent Approach script for in-vitro dissolution profile comparison as proposed by Sathe et al. in 1996
+# Model Dependent Approach script for in-vitro dissolution profile comparison as proposed by Sathe et al. in 1996
 # (Sathe PM, Tsong Y, Shah VP. In-vitro dissolution profile comparison: statistics and analysis, model dependent approach. Pharm Res. 1996 Dec;13(12):1799-803).
 # 
 # Copyright (C) 2017 Jakub Szlęk, Aleksander Mendyk
@@ -364,12 +364,12 @@ if(nloptr.method == TRUE){
 
 weibull.nloptr.r <- nloptr(x0=starting.params, eval_f=weibull, lb=lower.boundary, ub=upper.boundary,
                             t=dat.r[,1],X=dat.r[,2],
-                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=1,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
+                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=0,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
                             )
 
 weibull.nloptr.t <- nloptr(x0=starting.params, eval_f=weibull, lb=lower.boundary, ub=upper.boundary,
                             t=dat.t[,1],X=dat.t[,2],
-                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=1,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
+                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=0,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
                             )
                             
                             
@@ -566,7 +566,7 @@ if(nloptr.method == TRUE){
 
 weibull.nloptr.s <- nloptr(x0=starting.params, eval_f=weibull, lb=lower.boundary, ub=upper.boundary,
                             t=dat.s[,1],X=dat.s[,2],
-                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr.weibull,print_level=1,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
+                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr.weibull,print_level=0,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
                             )
             
   s.alpha.calc <- weibull.nloptr.s$solution[1]
@@ -637,7 +637,7 @@ print(rmse.std)
 
 cat("\n")
 cat("=========================","\n")
-cat("ref ",i,"\n")
+cat("std ",i,"\n")
 cat("alpha = ", s.alpha.calc,"\n")
 cat("beta = ", s.beta.calc,"\n")
 cat("=========================","\n")
@@ -687,7 +687,17 @@ for (i in 1:length(filenames_std)) {
     std.list[[i]] <- get(paste("par.std.df",i,sep=""))
 }
 
+
+
+
+
 all.std.par <- bind_rows(std.list,.id="id")
+
+
+
+cat("ALL.STD.LIST","\n")
+print(all.std.par)
+cat("\n")
 
 
 
@@ -828,6 +838,16 @@ nt <- nrow(log.mt)
 nr <- nrow(log.mr)
 p <- ncol(log.mt)
 
+
+cat("log.mt: ","\n")
+print(log.mt)
+cat("\n")
+
+cat("log.mr: ","\n")
+print(log.mr)
+cat("\n")
+
+
 if(validation.mode == TRUE){
     
     mt <- read.csv(file=paste(val.test),header=TRUE,row.names=1,sep="\t")
@@ -891,6 +911,23 @@ M.dist.cr.scaled <- (nt*nr)/(nt+nr)*M.dist.cr^2
 
 
 
+cat("S.sr: ","\n")
+print(S.sr)
+cat("\n")
+
+cat("S.cr: ","\n")
+print(S.cr)
+cat("\n")
+
+cat("M.dist.cr: ","\n")
+print(M.dist.cr)
+cat("\n")
+
+
+cat("M.dist.cr.scaled: ","\n")
+print(M.dist.cr.scaled)
+cat("\n")
+
 
 ellipse.sr <- matrix(nrow=ellipse.sr.npts,ncol=2,data=NA)
 ellipse.cr <- matrix(nrow=ellipse.cr.npts,ncol=2,data=NA)
@@ -901,7 +938,7 @@ ellipse.cr <- matrix(nrow=ellipse.cr.npts,ncol=2,data=NA)
 for (i in 1:ellipse.sr.npts){
 fit <- nloptr(x0=starting.params, eval_f=sr.ellipse, lb=lower.boundary, ub=upper.boundary,
                             S=S.sr, k.val=k.val, p=p, nr=nr, level=sr.level, 
-                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=1,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
+                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=0,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
                             )
 ellipse.sr[i,] <- fit$solution
                             
@@ -912,7 +949,7 @@ ellipse.sr[i,] <- fit$solution
 for (i in 1:ellipse.cr.npts){
 fit <- nloptr(x0=starting.params, eval_f=cr.ellipse, lb=lower.boundary, ub=upper.boundary,
                             S.cr=S.cr, mean.diff=mean.log.diff, k.val=k.val, p=p, nr=nr, level=cr.level, 
-                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=1,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
+                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=0,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
                             )
 ellipse.cr[i,] <- fit$solution
                             
@@ -957,7 +994,7 @@ ellipse.MM <- matrix(nrow=ellipse.cr.npts,ncol=2,data=NA)
 for (i in 1:ellipse.cr.npts){
 fit <- nloptr(x0=starting.params, eval_f=cr.ellipse, lb=lower.boundary, ub=upper.boundary,
                             S.cr=S.MMt, mean.diff=mean.log.diff.MMt, k.val=k.val, p=p, nr=nr, level=cr.level, 
-                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=1,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
+                            opts=list(algorithm="NLOPT_GN_CRS2_LM",xtol_rel=optim_rel_tol,maxeval=maxit_nloptr,print_level=0,local_opts=list(algorithm="NLOPT_LD_MMA",xtol_rel=optim_rel_tol))
                             )
 ellipse.MM[i,] <- fit$solution
                             
@@ -972,6 +1009,8 @@ ellipse.MM[i,] <- fit$solution
 #####     FIT ELLIPSE BASED ON THE POINTS GENERETED BY NLOPTR  ####
 ###################################################################
 
+write.table(ellipse.cr,file="ellipse_cr.txt")
+write.table(ellipse.sr,file="ellipse_sr.txt")
 
 
 ellipse1 <- draw.ellipse(ellipse.cr[,1], ellipse.cr[,2])
@@ -1002,6 +1041,13 @@ png("output.png", width=1800, height=1800, res=300)
 
 contour(ellipse1$u, ellipse1$v, ellipse1$z, levels=0, lwd=2, xlab="Ln(alpha)", ylab="Ln(beta)", asp=1,col="red", xlim=c(xlim[1]*1.10,xlim[2]*1.10),ylim=c(ylim[1]*1.10,ylim[2]*1.10), label="mm-REF", labcex=0.5)
 
+print("ellipse 1")
+print("")
+print(ellipse1)
+
+print("ellipse 2")
+print("")
+print(ellipse2)
 
 if(draw.ellipse.SR == TRUE){
 contour(ellipse2$u, ellipse2$v, ellipse2$z, levels=0, lwd=2, xlab="Ln(alpha)", ylab="Ln(beta)", asp=1,col="blue",add=TRUE, label="Similarity\n region\n (SR)", labcex=0.5)
