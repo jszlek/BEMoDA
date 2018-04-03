@@ -1,6 +1,6 @@
 /**
 *
-* BEMoDA v1.0 - Bioequivalence Model Dependent-Independent Approach script for in-vitro dissolution profile comparison
+* BEMoDA v1.0 - BiowaivEr aid for Model Dependent-Independent Approach script for in-vitro dissolution profile comparison
 Copyright (C) 2017 Jakub Szlęk, Aleksander Mendyk
 
 Authors: 
